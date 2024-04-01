@@ -21,14 +21,14 @@ def generate_poisson_functions(T: float, start_timestamp: int = 0):
     dist_afternoon = scipy.stats.norm(15.5 * HOUR, 1 * HOUR)
     dist_evening = scipy.stats.norm(20.5 * HOUR, 1 * HOUR)
 
-    dist_fluctuation = scipy.stats.norm(4 * DAY, 3 * DAY)
-
     def commit_intensity(t: np.ndarray):
         timestamps = t + start_timestamp
 
         is_weekend = pd.to_datetime(timestamps, unit='s').day_of_week >= 5
-        mult_day_of_week = np.where(is_weekend, 1 / 3, 1)
-        mult_motivation = (np.sin(timestamps / (4 * DAY) * np.pi) + 3) / 3
+        # Commit in weekends are 2/3 of commit in weekdays
+        mult_day_of_week = np.where(is_weekend, np.random.uniform(1 / 3, 3), 1)
+        # Motivation fluctuates like a sine function with an 10 HOUR period
+        mult_motivation = 1 # (np.sin(timestamps / (5 * HOUR) * np.pi) + 3) / 3
         return (
             # Different weight for each peak hour
             6 * dist_morning.pdf(timestamps % DAY) + # means expected 3 commit in the morning, etc.
@@ -74,8 +74,10 @@ if __name__ == "__main__":
 
             # Runs linearly with 1 second per day
             start_time = np.floor(datetime.now().timestamp())
-            T = 10 * DAY
+            T = 30 * DAY
             SAMPLING_RATE = T // (5 * MINUTE)
+
+            
 
             l, m, t, expected_count = generate_poisson_functions(T, start_time)
 
