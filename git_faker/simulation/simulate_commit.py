@@ -2,7 +2,7 @@
 Gather all function related to simulation and wrap it into one function.
 """
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import numpy as np
 
@@ -25,10 +25,10 @@ def simulate(start_time: datetime, end_time: datetime, iter_time_step=7 * DAY):
 
     for time_part_start in range(0, total_time, iter_time_step):
 
-        time_step = min(7 * DAY, total_time - time_part_start)
+        time_step = min(iter_time_step, total_time - time_part_start)
 
         print(
-            f"Simulating {time_step // DAY} DAYS FROM {datetime.fromtimestamp(timestamp_start)}"
+            f"SIMULATING {time_step // DAY} DAYS FROM {datetime.fromtimestamp(timestamp_start)} UTC"
         )
         progress_bar(time_part_start / total_time)
 
@@ -94,22 +94,23 @@ def generate_report(
 
     timestamp_start = start_time.timestamp()
     timestamp_end = end_time.timestamp()
+    current_timezone = datetime.now().astimezone().tzinfo 
 
     if print_timestamps:
         for t in result:
-            print(datetime.fromtimestamp(t))
+            print(datetime.fromtimestamp(t, current_timezone))
 
     if write_to_file:
         with open(write_to_file, "w", encoding="utf-8") as f:
             for t in result:
-                f.write(f"{datetime.fromtimestamp(t)}\n")
+                f.write(f"{datetime.fromtimestamp(t, current_timezone)}\n")
 
     print("\n\n" + "=" * 36, "REPORT", "=" * 36)
     commit_count = result.size
     print(f"COMMIT COUNT         : {commit_count} commits")
     total_simulation_day = (timestamp_end - timestamp_start) / DAY
     print(f"TOTAL SIMULATION DAY : {total_simulation_day} DAY")
-    mean_commit_per_day = commit_count / total_simulation_day * DAY
+    mean_commit_per_day = commit_count / total_simulation_day
     print(f"MEAN                 : {mean_commit_per_day:.2f} commits per day")
 
 
