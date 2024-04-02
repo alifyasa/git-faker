@@ -103,7 +103,8 @@ def generate_report(
     if write_to_file:
         with open(write_to_file, "w", encoding="utf-8") as f:
             for t in result:
-                f.write(f"{datetime.fromtimestamp(t, current_timezone)}\n")
+                # Write without timezone information
+                f.write(f"{datetime.fromtimestamp(t)}\n")
 
     print("\n\n" + "=" * 36, "REPORT", "=" * 36)
     commit_count = result.size

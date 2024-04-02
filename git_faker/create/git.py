@@ -35,6 +35,7 @@ def git_commit(
     commit_date is in format %Y-%m-%d %H:%M:%S.%f
     """
 
+    # Timstamp is implicitly assumed to use machine timezone
     formatted_date = datetime.strptime(commit_date.strip(), "%Y-%m-%d %H:%M:%S.%f")
     iso_date = formatted_date.isoformat()
     env = os.environ.copy()

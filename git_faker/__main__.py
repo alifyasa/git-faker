@@ -9,12 +9,13 @@ from datetime import datetime, timedelta
 
 from git_faker.simulation import simulate, generate_report
 from git_faker.create import create_simulated_repository, generate_random_string
+from git_faker.simulation import DAY
 
 
 if __name__ == "__main__":
 
     start_time = datetime.now()
-    end_time = start_time + timedelta(days=10)
+    end_time = start_time + timedelta(days = 45 * 365) # 45 Years
 
     sim_result_path = f"output/simulation/{start_time.date()} to {end_time.date()}.txt"
 
