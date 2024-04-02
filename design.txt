@@ -1,5 +1,0 @@
-# Functions
-
- 1. generate pdf based on total time
-
-https://dspace.cuni.cz/bitstream/handle/20.500.11956/101040/120308816.pdf?sequence=1
