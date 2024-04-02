@@ -10,8 +10,8 @@ import pandas as pd
 
 from datetime import datetime, timedelta
 
-from git_commit_sampler.simulation.plot import plot_func
-from git_commit_sampler.simulation.constants import MINUTE, HOUR, DAY
+from git_faker.simulation.plot import plot_func
+from git_faker.simulation.constants import MINUTE, HOUR, DAY
 
 def generate_poisson_functions(T: float, start_timestamp: float = 0):
 

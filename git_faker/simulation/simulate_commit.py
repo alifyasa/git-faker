@@ -1,8 +1,8 @@
 import numpy as np
 
 from datetime import datetime, timedelta
-from git_commit_sampler.simulation.constants import DAY, MINUTE, EPSILON
-from git_commit_sampler.simulation.poisson import generate_poisson_functions
+from git_faker.simulation.constants import DAY, MINUTE, EPSILON
+from git_faker.simulation.poisson import generate_poisson_functions
 
 SimulationResult = np.ndarray
 

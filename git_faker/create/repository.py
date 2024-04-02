@@ -1,6 +1,6 @@
-from git_commit_sampler.create.git import git_init, git_add_all, git_commit
-from git_commit_sampler.create.rw_file import create_folder
-from git_commit_sampler.create.utils import get_readme
+from git_faker.create.git import git_init, git_add_all, git_commit
+from git_faker.create.rw_file import create_folder
+from git_faker.create.utils import get_readme
 
 
 def create_simulated_repository(sim_result_path: str, repo_path: str):

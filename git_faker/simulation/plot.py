@@ -2,7 +2,7 @@ from typing import Callable
 
 import numpy as np
 import matplotlib.pyplot as plt
-from git_commit_sampler.simulation.constants import HOUR
+from git_faker.simulation.constants import HOUR
 
 def plot_func(
         func: Callable[[float], float], start = 0.0, end = 100.0, N = 10,

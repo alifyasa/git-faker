@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 
-from git_commit_sampler.simulation import simulate, generate_report
-from git_commit_sampler.create import create_simulated_repository, generate_random_string
+from git_faker.simulation import simulate, generate_report
+from git_faker.create import create_simulated_repository, generate_random_string
 
 def main():
     start_time = datetime.now()
