@@ -2,9 +2,14 @@
 
 Simulate git commit using non-homogenenous poisson process and create a git repository based on simulation result.
 
+## Screenshots
+
+![Image of Git Faker After Execution](docs/images/DONE.png)
+![Image of Git Faker During Execution](docs/images/ONGOING.png)
+
 ## Initializing Environment
 
-```sh
+```shell
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
@@ -12,7 +17,7 @@ pip install -r requirements.txt
 
 ## Running Project
 
-```sh
+```shell
 python -m git_faker
 ```
 
@@ -20,13 +25,13 @@ python -m git_faker
 
 Formatting using `black`:
 
-```sh
+```shell
 black git_faker
 ```
 
 Linting using `pylint`:
 
-```sh
+```shell
 pylint git_faker
 ```
 
