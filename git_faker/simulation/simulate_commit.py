@@ -71,7 +71,7 @@ def progress_bar(percentage: float):
     """
     formatted_percentage = format(percentage, ".2%")
     print(
-        f"[{('=' * int(percentage * 0.47 * 100)):<47}] {formatted_percentage:>7}",
+        f"[{('=' * int(percentage * 0.48 * 100)):<48}] {formatted_percentage:>7}",
         end="\r",
     )
 
@@ -81,7 +81,7 @@ def clean_progress_bar():
     Clean progress bar residue
     """
 
-    print(" " * 57, end="\r")
+    print(" " * 58, end="\r")
 
 
 def generate_report(
