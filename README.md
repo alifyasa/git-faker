@@ -15,3 +15,13 @@ pip install -r requirements.txt
 ```sh
 python -m git_faker
 ```
+
+## Linting
+
+```sh
+pylint git_faker
+```
+
+```sh
+autopep8 --in-place --recursive --aggressive --aggressive git_faker
+```
