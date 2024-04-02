@@ -2,7 +2,7 @@
 Git Faker
 
 Simulate git commit using non-homogenenous poisson process and create a git
-repository based on simulation result
+repository based on simulation result.
 """
 
 from datetime import datetime, timedelta

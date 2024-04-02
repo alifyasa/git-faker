@@ -1,6 +1,6 @@
 # Git Faker
 
-Sampling git commits based on non-homogeneous poisson process with custom lambda function
+Simulate git commit using non-homogenenous poisson process and create a git repository based on simulation result.
 
 ## Initializing Environment
 
