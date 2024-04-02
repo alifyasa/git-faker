@@ -1,57 +1,67 @@
-from typing import Callable
+"""
+Plotting Utilities
+"""
 
+from typing import Callable, Optional
 import numpy as np
 import matplotlib.pyplot as plt
-from git_faker.simulation.constants import HOUR
 
 
 def plot_func(
-    func: Callable[[float], float], start=0.0, end=100.0, N=10,
-    plot_name="plot", x_step=None, y_step=None,
-    width: float = 8, height: float = 6,
+    func: Callable[[np.ndarray], np.ndarray],
+    start: float = 0.0,
+    end: float = 100.0,
+    sampling_rate: int = 10,
+    options: Optional[dict] = None
 ):
-    x = np.linspace(start, end, num=N)
+    """
+    Plot a function
+    """
+
+    if options is None:
+        options = {}
+
+    x = np.linspace(start, end, num=sampling_rate)
     y = func(x)
 
-    # Plotting
-    plt.figure(figsize=(width, height))  # Optional: Adjust the figure size
-    plt.plot(x, y, label='y = f(x)')  # Plot x vs. y
-    plt.title(f'{plot_name} Plot')  # Optional: Add a title
-    plt.xlabel('x')  # Optional: Label the x-axis
-    plt.ylabel('y')  # Optional: Label the y-axis
-    plt.legend()  # Optional: Add a legend
-    plt.grid(True)  # Optional: Show grid
+    plt.figure(figsize=(options.get('width', 8), options.get('height', 6)))
+    plt.plot(x, y, label=options.get('label', 'y = f(x)'))
+    plt.title(options.get('title', 'Plot'))
+    plt.xlabel(options.get('xlabel', 'x'))
+    plt.ylabel(options.get('ylabel', 'y'))
+    if options.get('legend', False):
+        plt.legend()
+    plt.grid(options.get('grid', True))
 
-    if x_step is not None:
+    if 'x_step' in options and 'y_step' in options:
+        x_step = options['x_step']
+        y_step = options['y_step']
         plt.xticks(
-            ticks=np.arange(
+            np.arange(
                 np.min(x),
                 np.max(x) +
                 1,
                 x_step),
-            labels=(
-                np.arange(
-                    np.min(x),
-                    np.max(x) +
-                    1,
-                    x_step) /
+            (np.arange(
+                np.min(x),
+                np.max(x) +
+                1,
+                x_step) /
                 x_step).astype(
                 np.integer))
-    if y_step is not None:
         plt.yticks(
-            ticks=np.arange(
+            np.arange(
                 np.min(y),
                 np.max(y) +
                 1,
                 y_step),
-            labels=(
-                np.arange(
-                    np.min(y),
-                    np.max(y) +
-                    1,
-                    y_step) /
+            (np.arange(
+                np.min(y),
+                np.max(y) +
+                1,
+                y_step) /
                 y_step).astype(
                 np.integer))
 
     # Save the plot to a file
-    plt.savefig(f"output/plots/{plot_name}.png")
+    plt.savefig(f"output/plots/{options.get('plot_name', 'plot')}.png")
