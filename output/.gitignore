@@ -1,5 +1,5 @@
 *
 !.gitignore
-!plots
-!simulation
-!stats
+!plots/
+!simulation/
+!stats/
