@@ -2,7 +2,7 @@
 Gather all function related to simulation and wrap it into one function.
 """
 
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 
 import numpy as np
 
@@ -28,7 +28,7 @@ def simulate(start_time: datetime, end_time: datetime, iter_time_step=7 * DAY):
         time_step = min(iter_time_step, total_time - time_part_start)
 
         print(
-            f"SIMULATING {time_step // DAY} DAYS FROM {datetime.fromtimestamp(timestamp_start)} UTC"
+            f"SIMULATING {time_step // DAY} DAYS FROM {datetime.fromtimestamp(timestamp_start)}"
         )
         progress_bar(time_part_start / total_time)
 
@@ -69,8 +69,11 @@ def progress_bar(percentage: float):
     """
     Print a progress bar
     """
-
-    print(f"[{('=' * int(percentage * 0.7 * 100)):<70}] {percentage:.2%}", end="\r")
+    formatted_percentage = format(percentage, ".2%")
+    print(
+        f"[{('=' * int(percentage * 0.47 * 100)):<47}] {formatted_percentage:>7}",
+        end="\r",
+    )
 
 
 def clean_progress_bar():
@@ -78,7 +81,7 @@ def clean_progress_bar():
     Clean progress bar residue
     """
 
-    print(" " * 80, end="\r")
+    print(" " * 57, end="\r")
 
 
 def generate_report(
@@ -106,7 +109,7 @@ def generate_report(
                 # Write without timezone information
                 f.write(f"{datetime.fromtimestamp(t)}\n")
 
-    print("\n\n" + "=" * 36, "REPORT", "=" * 36)
+    print("\n\n" + "=" * 21, "REPORT", "=" * 21)
     commit_count = result.size
     print(f"COMMIT COUNT         : {commit_count} commits")
     total_simulation_day = (timestamp_end - timestamp_start) / DAY

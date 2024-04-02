@@ -15,11 +15,11 @@ from git_faker.simulation import DAY
 if __name__ == "__main__":
 
     start_time = datetime.now()
-    end_time = start_time + timedelta(days=45 * 365)  # 45 Years
+    end_time = start_time + timedelta(days=90)
 
     sim_result_path = f"output/simulation/{start_time.date()} to {end_time.date()}.txt"
 
-    sim_result = simulate(start_time, end_time)
+    sim_result = simulate(start_time, end_time, 10 * DAY)
     generate_report(sim_result, start_time, end_time, write_to_file=sim_result_path)
 
     create_simulated_repository(

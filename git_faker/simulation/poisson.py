@@ -32,7 +32,7 @@ def generate_lambda(total_time: int, start_timestamp: float, sampling_rate: int)
     """
     current_timezone = datetime.now().astimezone().tzinfo
 
-    # Peak hours in the day is at 10, 15:30, and 20:30
+    # Peak hours in the day
     dist_morning = scipy.stats.norm(9 * HOUR, 2 * HOUR)
     dist_afternoon = scipy.stats.norm(14.5 * HOUR, 1 * HOUR)
     dist_evening = scipy.stats.norm(20.5 * HOUR, 0.5 * HOUR)
@@ -58,17 +58,17 @@ def generate_lambda(total_time: int, start_timestamp: float, sampling_rate: int)
         # Commit in weekends can be more or less of week days
         #   The rationale is that I have a life (less commit)
         #   But I still code personal projects in weekends (more commit)
-        mult_day_of_week = np.where(is_weekend, np.random.uniform(1 / 3, 3), 1)
+        mult_day_of_week = np.where(is_weekend, np.random.exponential(0.8), 1)
 
         # Motivation fluctuates like a sine function
-        mult_motivation = (np.sin(timestamps / (3 * DAY) * np.pi) + 2) / 2
+        mult_motivation = (np.sin(timestamps / (3 * DAY) * np.pi) + 1.5) / 2
         return (
             (
                 # Different weight for each peak hour
-                # means expected 3 commit in the morning, etc.
-                6 * dist_morning.pdf(dt_time % DAY)
-                + 8 * dist_afternoon.pdf(dt_time % DAY)
-                + 3 * dist_evening.pdf(dt_time % DAY)
+                # means expected N commit in the morning, etc.
+                2 * dist_morning.pdf(dt_time % DAY)
+                + 6 * dist_afternoon.pdf(dt_time % DAY)
+                + 4 * dist_evening.pdf(dt_time % DAY)
             )
             * mult_day_of_week
             * mult_motivation
