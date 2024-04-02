@@ -13,7 +13,7 @@ from datetime import datetime, timedelta
 from git_commit_sampler.simulation.plot import plot_func
 from git_commit_sampler.simulation.constants import MINUTE, HOUR, DAY
 
-def generate_poisson_functions(T: float, start_timestamp: int = 0):
+def generate_poisson_functions(T: float, start_timestamp: float = 0):
 
     SAMPLING_RATE = T // (5 * MINUTE) # SAMPLING sample per hour
     # Peak hours in the day is at 10, 15:30, and 20:30
