@@ -22,7 +22,7 @@ import numpy as np
 import pandas as pd
 
 from git_faker.simulation.plot import plot_func
-from git_faker.simulation.constants import MINUTE, HOUR, DAY
+from git_faker.simulation.constants import MINUTE, HOUR, DAY, SECOND
 
 
 def generate_lambda(total_time: int, start_timestamp: float, sampling_rate: int):
@@ -30,16 +30,22 @@ def generate_lambda(total_time: int, start_timestamp: float, sampling_rate: int)
     Generate lambda based on commit_intensity. Used interpolation for
     faster computation.
     """
+    current_timezone = datetime.now().astimezone().tzinfo 
 
     # Peak hours in the day is at 10, 15:30, and 20:30
-    dist_morning = scipy.stats.norm(10 * HOUR, 1 * HOUR)
-    dist_afternoon = scipy.stats.norm(15.5 * HOUR, 1 * HOUR)
-    dist_evening = scipy.stats.norm(20.5 * HOUR, 1 * HOUR)
+    dist_morning = scipy.stats.norm(9 * HOUR, 2 * HOUR)
+    dist_afternoon = scipy.stats.norm(14.5 * HOUR, 1 * HOUR)
+    dist_evening = scipy.stats.norm(20.5 * HOUR, 0.5 * HOUR)
 
     def commit_intensity(t: np.ndarray):
         timestamps = t + start_timestamp
 
-        is_weekend = pd.to_datetime(timestamps, unit="s").day_of_week >= 5
+        datetimes = pd.to_datetime(timestamps, unit="s").tz_localize('UTC').tz_convert(current_timezone)
+
+        dt_time = datetimes.hour * HOUR + datetimes.minute * MINUTE + datetimes.second * SECOND
+        dt_dayofweek = datetimes.day_of_week
+        
+        is_weekend = dt_dayofweek >= 5
 
         # Commit in weekends can be more or less of week days
         #   The rationale is that I have a life (less commit)
@@ -52,9 +58,9 @@ def generate_lambda(total_time: int, start_timestamp: float, sampling_rate: int)
             (
                 # Different weight for each peak hour
                 # means expected 3 commit in the morning, etc.
-                6 * dist_morning.pdf(timestamps % DAY)
-                + 8 * dist_afternoon.pdf(timestamps % DAY)
-                + 3 * dist_evening.pdf(timestamps % DAY)
+                6 * dist_morning.pdf(dt_time % DAY)
+                + 8 * dist_afternoon.pdf(dt_time % DAY)
+                + 3 * dist_evening.pdf(dt_time % DAY)
             )
             * mult_day_of_week
             * mult_motivation
