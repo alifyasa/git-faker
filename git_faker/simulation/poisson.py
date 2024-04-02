@@ -13,9 +13,10 @@ from datetime import datetime, timedelta
 from git_faker.simulation.plot import plot_func
 from git_faker.simulation.constants import MINUTE, HOUR, DAY
 
+
 def generate_poisson_functions(T: float, start_timestamp: float = 0):
 
-    SAMPLING_RATE = T // (5 * MINUTE) # SAMPLING sample per hour
+    SAMPLING_RATE = T // (5 * MINUTE)  # SAMPLING sample per hour
     # Peak hours in the day is at 10, 15:30, and 20:30
     dist_morning = scipy.stats.norm(10 * HOUR, 1 * HOUR)
     dist_afternoon = scipy.stats.norm(15.5 * HOUR, 1 * HOUR)
@@ -28,18 +29,20 @@ def generate_poisson_functions(T: float, start_timestamp: float = 0):
         # Commit in weekends are 2/3 of commit in weekdays
         mult_day_of_week = np.where(is_weekend, np.random.uniform(1 / 3, 3), 1)
         # Motivation fluctuates like a sine function with an 10 HOUR period
-        mult_motivation = 1 # (np.sin(timestamps / (5 * HOUR) * np.pi) + 3) / 3
+        # (np.sin(timestamps / (5 * HOUR) * np.pi) + 3) / 3
+        mult_motivation = 1
         return (
             # Different weight for each peak hour
-            6 * dist_morning.pdf(timestamps % DAY) + # means expected 3 commit in the morning, etc.
+            # means expected 3 commit in the morning, etc.
+            6 * dist_morning.pdf(timestamps % DAY) +
             8 * dist_afternoon.pdf(timestamps % DAY) +
             3 * dist_evening.pdf(timestamps % DAY)
         ) * mult_day_of_week * mult_motivation
-    
+
     ci_X = np.linspace(0, T, num=SAMPLING_RATE)
     ci_Y = commit_intensity(ci_X)
     ci_total = scipy.integrate.simpson(x=ci_X, y=ci_Y)
-    
+
     def lambda_(t: np.ndarray):
         return np.interp(t, ci_X, ci_Y)
 
@@ -47,7 +50,6 @@ def generate_poisson_functions(T: float, start_timestamp: float = 0):
         x = np.linspace(0, t, num=SAMPLING_RATE)
         y = lambda_(x)
         return scipy.integrate.simpson(x=x, y=y)
-
 
     def generate_expectation(t: np.ndarray):
         return np.vectorize(__single_generate_expectation)(t)
@@ -68,6 +70,7 @@ def generate_poisson_functions(T: float, start_timestamp: float = 0):
 
     return (lambda_, expectation, inv_expectation, ci_total)
 
+
 if __name__ == "__main__":
     with open(f"output/stats/poisson_{int(datetime.now().timestamp())}.txt", "w") as f:
         with cProfile.Profile() as pr:
@@ -77,18 +80,16 @@ if __name__ == "__main__":
             T = 30 * DAY
             SAMPLING_RATE = T // (5 * MINUTE)
 
-            
-
             l, m, t, expected_count = generate_poisson_functions(T, start_time)
 
             print(expected_count / T * DAY)
 
-            #plot_func(l, 0, T, SAMPLING_RATE, "Lambda", x_step=HOUR, width= T // (3 * HOUR))
-            #plot_func(m, 0, T, SAMPLING_RATE, "Expectation", x_step=HOUR, width= T // (3 * HOUR))
-            #plot_func(
+            # plot_func(l, 0, T, SAMPLING_RATE, "Lambda", x_step=HOUR, width= T // (3 * HOUR))
+            # plot_func(m, 0, T, SAMPLING_RATE, "Expectation", x_step=HOUR, width= T // (3 * HOUR))
+            # plot_func(
             #    t, 0, expected_count, SAMPLING_RATE, "Inverse Expectation", y_step= HOUR,
             #    width= expected_count // 2, height= T // (3 * HOUR)
-            #)
+            # )
 
             ps = pstats.Stats(pr, stream=f)
             ps.sort_stats('cumtime')

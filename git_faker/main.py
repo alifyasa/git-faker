@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from git_faker.simulation import simulate, generate_report
 from git_faker.create import create_simulated_repository, generate_random_string
 
+
 def main():
     start_time = datetime.now()
     end_time = start_time + timedelta(days=10)

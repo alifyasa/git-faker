@@ -4,11 +4,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 from git_faker.simulation.constants import HOUR
 
+
 def plot_func(
-        func: Callable[[float], float], start = 0.0, end = 100.0, N = 10,
-        plot_name="plot", x_step = None, y_step = None,
-        width: float = 8, height: float = 6,
-    ):
+    func: Callable[[float], float], start=0.0, end=100.0, N=10,
+    plot_name="plot", x_step=None, y_step=None,
+    width: float = 8, height: float = 6,
+):
     x = np.linspace(start, end, num=N)
     y = func(x)
 
@@ -21,16 +22,36 @@ def plot_func(
     plt.legend()  # Optional: Add a legend
     plt.grid(True)  # Optional: Show grid
 
-    if x_step != None:
+    if x_step is not None:
         plt.xticks(
-            ticks = np.arange(np.min(x), np.max(x) + 1, x_step),
-            labels = (np.arange(np.min(x), np.max(x) + 1, x_step) / x_step).astype(np.integer)
-        )
-    if y_step != None:
+            ticks=np.arange(
+                np.min(x),
+                np.max(x) +
+                1,
+                x_step),
+            labels=(
+                np.arange(
+                    np.min(x),
+                    np.max(x) +
+                    1,
+                    x_step) /
+                x_step).astype(
+                np.integer))
+    if y_step is not None:
         plt.yticks(
-            ticks = np.arange(np.min(y), np.max(y) + 1, y_step),
-            labels = (np.arange(np.min(y), np.max(y) + 1, y_step) / y_step).astype(np.integer)
-        )
+            ticks=np.arange(
+                np.min(y),
+                np.max(y) +
+                1,
+                y_step),
+            labels=(
+                np.arange(
+                    np.min(y),
+                    np.max(y) +
+                    1,
+                    y_step) /
+                y_step).astype(
+                np.integer))
 
     # Save the plot to a file
     plt.savefig(f"output/plots/{plot_name}.png")

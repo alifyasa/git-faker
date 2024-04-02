@@ -21,6 +21,6 @@ def create_simulated_repository(sim_result_path: str, repo_path: str):
 
             with open(f"{repo_path}/README.md", "w") as repo_file:
                 repo_file.write(get_readme(commit_date))
-            
+
             git_add_all(repo_path)
             git_commit(commit_date, repo_path, f"Update {commit_date}")
