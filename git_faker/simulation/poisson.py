@@ -25,11 +25,7 @@ from git_faker.simulation.plot import plot_func
 from git_faker.simulation.constants import MINUTE, HOUR, DAY
 
 
-def generate_lambda(
-    total_time: int,
-    start_timestamp: float,
-    sampling_rate: int
-):
+def generate_lambda(total_time: int, start_timestamp: float, sampling_rate: int):
     """
     Generate lambda based on commit_intensity. Used interpolation for
     faster computation.
@@ -43,7 +39,7 @@ def generate_lambda(
     def commit_intensity(t: np.ndarray):
         timestamps = t + start_timestamp
 
-        is_weekend = pd.to_datetime(timestamps, unit='s').day_of_week >= 5
+        is_weekend = pd.to_datetime(timestamps, unit="s").day_of_week >= 5
 
         # Commit in weekends can be more or less of week days
         #   The rationale is that I have a life (less commit)
@@ -53,12 +49,16 @@ def generate_lambda(
         # Motivation fluctuates like a sine function
         mult_motivation = (np.sin(timestamps / (3 * DAY) * np.pi) + 2) / 2
         return (
-            # Different weight for each peak hour
-            # means expected 3 commit in the morning, etc.
-            6 * dist_morning.pdf(timestamps % DAY) +
-            8 * dist_afternoon.pdf(timestamps % DAY) +
-            3 * dist_evening.pdf(timestamps % DAY)
-        ) * mult_day_of_week * mult_motivation
+            (
+                # Different weight for each peak hour
+                # means expected 3 commit in the morning, etc.
+                6 * dist_morning.pdf(timestamps % DAY)
+                + 8 * dist_afternoon.pdf(timestamps % DAY)
+                + 3 * dist_evening.pdf(timestamps % DAY)
+            )
+            * mult_day_of_week
+            * mult_motivation
+        )
 
     ci_x = np.linspace(0, total_time, num=sampling_rate)
     ci_y = commit_intensity(ci_x)
@@ -71,13 +71,12 @@ def generate_lambda(
 
 
 def generate_expectation_with_inverse(
-    total_time: int,
-    lambda_: Callable[[np.ndarray], np.ndarray],
-    sampling_rate: int
+    total_time: int, lambda_: Callable[[np.ndarray], np.ndarray], sampling_rate: int
 ):
     """
     Integrate lambda over some time t. Also returns the inverse function.
     """
+
     def __single_generate_expectation(t: float):
         x = np.linspace(0, t, num=sampling_rate)
         y = lambda_(x)
@@ -115,18 +114,21 @@ def generate_poisson_functions(total_time: float, start_timestamp: float = 0):
     sampling_rate = total_time // (5 * MINUTE)  # SAMPLING sample per hour
 
     lambda_, mean_expectation = generate_lambda(
-        total_time, start_timestamp, sampling_rate)
+        total_time, start_timestamp, sampling_rate
+    )
 
     expectation, inv_expectation = generate_expectation_with_inverse(
-        total_time, lambda_, sampling_rate)
+        total_time, lambda_, sampling_rate
+    )
 
     return (lambda_, expectation, inv_expectation, mean_expectation)
 
 
 if __name__ == "__main__":
     with open(
-        f"output/stats/poisson_{int(datetime.now().timestamp())}.txt", "w",
-        encoding="utf-8"
+        f"output/stats/poisson_{int(datetime.now().timestamp())}.txt",
+        "w",
+        encoding="utf-8",
     ) as f:
         with cProfile.Profile() as pr:
 
@@ -134,32 +136,47 @@ if __name__ == "__main__":
             start_time = np.floor(datetime.now().timestamp())
             T = 30 * DAY
 
-            lmbd, mu, tau, expected_count = generate_poisson_functions(
-                T, start_time)
+            lmbd, mu, tau, expected_count = generate_poisson_functions(T, start_time)
 
             PLOT_SAMPLING_RATE = T // (5 * MINUTE)
 
             print(expected_count / T * DAY)
 
-            plot_func(lmbd, 0, T, PLOT_SAMPLING_RATE, options={
-                "plot_name": "Lambda",
-                      "x_step": HOUR, "width": T // (3 * HOUR)
-                      })
-            plot_func(mu, 0, T, PLOT_SAMPLING_RATE, options={
-                "plot_name": "Expectation",
-                      "x_step": HOUR, "width": T // (3 * HOUR)
-                      })
-            plot_func(tau,
-                      0,
-                      expected_count,
-                      PLOT_SAMPLING_RATE,
-                      options={
-                          "plot_name": "Inverse Expectation",
-                          "y_step": HOUR,
-                          "width": expected_count // 2,
-                          "height": T // (3 * HOUR)
-                      })
+            plot_func(
+                lmbd,
+                0,
+                T,
+                PLOT_SAMPLING_RATE,
+                options={
+                    "plot_name": "Lambda",
+                    "x_step": HOUR,
+                    "width": T // (3 * HOUR),
+                },
+            )
+            plot_func(
+                mu,
+                0,
+                T,
+                PLOT_SAMPLING_RATE,
+                options={
+                    "plot_name": "Expectation",
+                    "x_step": HOUR,
+                    "width": T // (3 * HOUR),
+                },
+            )
+            plot_func(
+                tau,
+                0,
+                expected_count,
+                PLOT_SAMPLING_RATE,
+                options={
+                    "plot_name": "Inverse Expectation",
+                    "y_step": HOUR,
+                    "width": expected_count // 2,
+                    "height": T // (3 * HOUR),
+                },
+            )
 
             ps = pstats.Stats(pr, stream=f)
-            ps.sort_stats('cumtime')
+            ps.sort_stats("cumtime")
             ps.print_stats()

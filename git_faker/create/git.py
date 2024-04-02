@@ -27,20 +27,19 @@ def git_add_all(repo_path: str):
 
 
 def git_commit(
-        commit_date: str,
-        repo_path: str,
-        commit_message: str = "Initial commit"):
+    commit_date: str, repo_path: str, commit_message: str = "Initial commit"
+):
     """
     Commit all staged changes. Can customize commit date.
 
     commit_date is in format %Y-%m-%d %H:%M:%S.%f
     """
 
-    formatted_date = datetime.strptime(
-        commit_date.strip(), "%Y-%m-%d %H:%M:%S.%f")
+    formatted_date = datetime.strptime(commit_date.strip(), "%Y-%m-%d %H:%M:%S.%f")
     iso_date = formatted_date.isoformat()
     env = os.environ.copy()
-    env['GIT_COMMITTER_DATE'] = iso_date
-    env['GIT_AUTHOR_DATE'] = iso_date
-    subprocess.run(["git", "-C", repo_path, "commit", "-m",
-                   commit_message], env=env, check=True)
+    env["GIT_COMMITTER_DATE"] = iso_date
+    env["GIT_AUTHOR_DATE"] = iso_date
+    subprocess.run(
+        ["git", "-C", repo_path, "commit", "-m", commit_message], env=env, check=True
+    )

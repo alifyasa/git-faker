@@ -16,12 +16,16 @@ pip install -r requirements.txt
 python -m git_faker
 ```
 
-## Linting
+## Formatting and Linting
+
+Formatting using `black`:
+
+```sh
+black git_faker
+```
+
+Linting using `pylint`:
 
 ```sh
 pylint git_faker
-```
-
-```sh
-autopep8 --in-place --recursive --aggressive --aggressive git_faker
 ```

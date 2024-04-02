@@ -12,10 +12,7 @@ from git_faker.simulation.poisson import generate_poisson_functions
 SimulationResult = np.ndarray
 
 
-def simulate(
-    start_time: datetime, end_time: datetime,
-    iter_time_step=7 * DAY
-):
+def simulate(start_time: datetime, end_time: datetime, iter_time_step=7 * DAY):
     """
     Simulate Git Commit.
     """
@@ -31,7 +28,8 @@ def simulate(
         time_step = min(7 * DAY, total_time - time_part_start)
 
         print(
-            f"Simulating {time_step // DAY} DAYS FROM {datetime.fromtimestamp(timestamp_start)}")
+            f"Simulating {time_step // DAY} DAYS FROM {datetime.fromtimestamp(timestamp_start)}"
+        )
         progress_bar(time_part_start / total_time)
 
         __sim_result = __simulate(time_step, timestamp_start)
@@ -58,7 +56,7 @@ def __simulate(total_time: float, start_time: float):
     t_nh: np.ndarray = np.array([])
     while True:
         u = np.random.uniform(EPSILON, 1)
-        s_h = - np.log(1 - u)
+        s_h = -np.log(1 - u)
 
         if t_h + s_h > mu(total_time):
             return t_nh + start_time
@@ -72,9 +70,7 @@ def progress_bar(percentage: float):
     Print a progress bar
     """
 
-    print(
-        f"[{('=' * int(percentage * 0.7 * 100)):<70}] {percentage:.2%}",
-        end='\r')
+    print(f"[{('=' * int(percentage * 0.7 * 100)):<70}] {percentage:.2%}", end="\r")
 
 
 def clean_progress_bar():
@@ -82,13 +78,15 @@ def clean_progress_bar():
     Clean progress bar residue
     """
 
-    print(" " * 80, end='\r')
+    print(" " * 80, end="\r")
 
 
 def generate_report(
-    result: SimulationResult, start_time: datetime, end_time: datetime,
+    result: SimulationResult,
+    start_time: datetime,
+    end_time: datetime,
     print_timestamps=False,
-    write_to_file: str = None
+    write_to_file: str = None,
 ):
     """
     Write simulation result to stdout or a file
@@ -110,11 +108,9 @@ def generate_report(
     commit_count = result.size
     print(f"COMMIT COUNT         : {commit_count} commits")
     total_simulation_day = (timestamp_end - timestamp_start) / DAY
-    print(
-        f"TOTAL SIMULATION DAY : {total_simulation_day} DAY")
+    print(f"TOTAL SIMULATION DAY : {total_simulation_day} DAY")
     mean_commit_per_day = commit_count / total_simulation_day * DAY
-    print(
-        f"MEAN                 : {mean_commit_per_day:.2f} commits per day")
+    print(f"MEAN                 : {mean_commit_per_day:.2f} commits per day")
 
 
 if __name__ == "__main__":
@@ -126,4 +122,5 @@ if __name__ == "__main__":
         simulation_result,
         sim_start_time,
         sim_end_time,
-        write_to_file=f"output/simulation/{sim_start_time.date()} to {sim_end_time.date()}.txt")
+        write_to_file=f"output/simulation/{sim_start_time.date()} to {sim_end_time.date()}.txt",
+    )
