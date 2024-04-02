@@ -13,7 +13,7 @@ def simulate(
     timestamp_start = start_time.timestamp()
     timestamp_end = end_time.timestamp()
 
-    T = timestamp_end - timestamp_start
+    T = int(timestamp_end - timestamp_start)
     sim_result: SimulationResult = np.array([])
 
     for time_part_start in range(0, T, iter_time_step):
@@ -81,7 +81,7 @@ def generate_report(
 
 if __name__ == "__main__":
     start_time = datetime.now()
-    end_time = start_time + timedelta(days=365)
+    end_time = start_time + timedelta(days=45 * 365)
 
     sim_result = simulate(start_time, end_time)
     generate_report(
