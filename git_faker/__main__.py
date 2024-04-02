@@ -15,7 +15,7 @@ from git_faker.simulation import DAY
 if __name__ == "__main__":
 
     start_time = datetime.now()
-    end_time = start_time + timedelta(days = 45 * 365) # 45 Years
+    end_time = start_time + timedelta(days=45 * 365)  # 45 Years
 
     sim_result_path = f"output/simulation/{start_time.date()} to {end_time.date()}.txt"
 

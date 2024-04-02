@@ -94,7 +94,7 @@ def generate_report(
 
     timestamp_start = start_time.timestamp()
     timestamp_end = end_time.timestamp()
-    current_timezone = datetime.now().astimezone().tzinfo 
+    current_timezone = datetime.now().astimezone().tzinfo
 
     if print_timestamps:
         for t in result:

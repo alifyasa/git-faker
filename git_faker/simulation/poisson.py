@@ -30,7 +30,7 @@ def generate_lambda(total_time: int, start_timestamp: float, sampling_rate: int)
     Generate lambda based on commit_intensity. Used interpolation for
     faster computation.
     """
-    current_timezone = datetime.now().astimezone().tzinfo 
+    current_timezone = datetime.now().astimezone().tzinfo
 
     # Peak hours in the day is at 10, 15:30, and 20:30
     dist_morning = scipy.stats.norm(9 * HOUR, 2 * HOUR)
@@ -40,11 +40,19 @@ def generate_lambda(total_time: int, start_timestamp: float, sampling_rate: int)
     def commit_intensity(t: np.ndarray):
         timestamps = t + start_timestamp
 
-        datetimes = pd.to_datetime(timestamps, unit="s").tz_localize('UTC').tz_convert(current_timezone)
+        datetimes = (
+            pd.to_datetime(timestamps, unit="s")
+            .tz_localize("UTC")
+            .tz_convert(current_timezone)
+        )
 
-        dt_time = datetimes.hour * HOUR + datetimes.minute * MINUTE + datetimes.second * SECOND
+        dt_time = (
+            datetimes.hour * HOUR
+            + datetimes.minute * MINUTE
+            + datetimes.second * SECOND
+        )
         dt_dayofweek = datetimes.day_of_week
-        
+
         is_weekend = dt_dayofweek >= 5
 
         # Commit in weekends can be more or less of week days
